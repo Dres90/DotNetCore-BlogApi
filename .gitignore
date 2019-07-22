@@ -1,0 +1,5 @@
+
+*.dll
+*.pdb
+blog-api/bin/*
+blog-api/obj/*
