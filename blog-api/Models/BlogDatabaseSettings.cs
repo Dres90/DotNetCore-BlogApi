@@ -1,8 +1,7 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace blog_api.Models
 {
+
+    //Interface and class representing needed settings
     public class BlogDatabaseSettings : IBlogDatabaseSettings
     {
         public string PostsCollectionName { get; set; }

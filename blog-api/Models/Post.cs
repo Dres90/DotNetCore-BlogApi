@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace blog_api.Models
 {
+    //Class representing a Post
     public class Post
     {
         [BsonId]

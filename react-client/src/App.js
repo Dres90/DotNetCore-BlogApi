@@ -1,35 +1,51 @@
 import React, { Component } from 'react';
-import './App.css';
 import Post from './components/Post'
 
 const host = 'https://localhost:5001/api/post';
+const errorMessage = 'Failed! Please look at developer console'
 
 class App extends Component {
 
   state = {
-    posts: []
+    posts: [],
+    message: ''
   }
-
-
+  
+  //Get all posts on load
   componentDidMount() {
     fetch(host)
       .then(res => res.json())
       .then((data) => {
-        this.setState({ posts: data })
+        this.setState({ posts: data,
+        message: 'Get Posts Success!' })
       })
-      .catch(console.log)
+      .catch((err) =>{
+        console.log(err);
+        this.updateMessage(errorMessage);
+      });
   }
-
+  
+  //Add new post to state array, not published to API yet
   addPost = () => {
     const data = {
       Id: 'new',
       Headline: '',
       Content: ''
     }
-    this.setState({ posts: [...this.state.posts, data]})
+    this.setState({ posts: [...this.state.posts, data] })
+    this.updateMessage('');
   }
 
+  //Helper used to update status text displayed
+  updateMessage = (message) =>{
+    this.setState({
+      message: message
+    })
+  }
+  
+  //Send new Post to API
   createPost = (index, post) => {
+    this.updateMessage('');
     fetch(host, {
       method: 'POST',
       headers: {
@@ -41,14 +57,23 @@ class App extends Component {
         Headline: post.headline
       })
     })
-    .then((data) => {
-      let posts = this.state.posts;
-      posts[index] = data;
-      this.setState({ posts })
-    })
+      .then((data) => {
+        let posts = this.state.posts;
+        posts[index] = data;
+        this.setState({
+          posts,
+          message: 'Create Post Success!'
+        })
+      })
+      .catch((err) =>{
+        console.log(err);
+        this.updateMessage(errorMessage);
+      });
   }
 
+  //Update a Post
   savePost = (index, post) => {
+    this.updateMessage('');
     fetch(`${host}/${post.id}`, {
       method: 'PUT',
       headers: {
@@ -61,48 +86,62 @@ class App extends Component {
         Id: post.id
       })
     })
-    .then((data) => {
-      let posts = this.state.posts;
-      posts[index] = data;
-      this.setState({ posts })
-    })
+      .then((data) => {
+        let posts = this.state.posts;
+        posts[index] = data;
+        this.setState({
+          posts,
+          message: 'Update Post Success!'
+        })
+      })
+      .catch((err) =>{
+        console.log(err);
+        this.updateMessage(errorMessage);
+      });
   }
-  
+
+  //Delete post from API
   deletePost = (index) => {
-    console.log('deletePost', this.state.posts, index)
+    this.updateMessage('');
     let post = this.state.posts[index];
-    fetch(`${host}/${post.id}`, {
+    fetch(`${host}/${post.Id}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
     })
-    .then(() => {
-      this.removePost(index)
-    })
+      .then(() => {
+        this.removePost(index)
+        this.setState({message: 'Delete Post Success!'})
+      })
+      .catch((err) =>{
+        console.log(err);
+        this.updateMessage(errorMessage);
+      });
   }
 
+  //Remove post from react state only
   removePost = (index) => {
-    console.log('removePost')
     let posts = this.state.posts;
     posts.splice(index, 1);
     this.setState({ posts })
   }
 
   render() {
-    const { posts } = this.state;
+    const { posts, message } = this.state;
     return (
       <div>
         <button className="btn btn-default" onClick={() => this.addPost()}>Create Post</button>
+        <span className="mark">{message}</span>
         {
           posts.map((post, index) => {
-            return <Post post={post} key={index} 
-            createPost={this.createPost}
-            savePost={this.savePost}
-            removePost={this.removePost}
-            deletePost={this.deletePost}
-            index={index}
+            return <Post post={post} key={index}
+              createPost={this.createPost}
+              savePost={this.savePost}
+              removePost={this.removePost}
+              deletePost={this.deletePost}
+              index={index}
             />
           })
 

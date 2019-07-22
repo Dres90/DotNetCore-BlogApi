@@ -16,15 +16,17 @@ namespace blog_api.Controllers
             _postService = postService;
         }
 
+
+        //Get All Posts
         [HttpGet]
         public ActionResult<List<Post>> Get() =>
             _postService.Get();
 
+        //Get a post using a specific ID
         [HttpGet("{id:length(24)}", Name = "GetPost")]
         public ActionResult<Post> Get(string id)
         {
             var post = _postService.Get(id);
-
             if (post == null)
             {
                 return NotFound();
@@ -33,6 +35,8 @@ namespace blog_api.Controllers
             return post;
         }
 
+
+        //Create a new Post
         [HttpPost]
         public ActionResult<Post> Create(Post post)
         {
@@ -41,6 +45,7 @@ namespace blog_api.Controllers
             return CreatedAtRoute("GetPost", new { id = post.Id.ToString() }, post);
         }
 
+        //Update a post using a specific Id
         [HttpPut("{id:length(24)}")]
         public ActionResult<Post> Update(string id, Post postIn)
         {
@@ -56,6 +61,7 @@ namespace blog_api.Controllers
             return postIn;
         }
 
+        //Delete a post using a specific Id
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {

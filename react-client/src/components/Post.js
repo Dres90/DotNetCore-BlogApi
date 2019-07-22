@@ -18,17 +18,21 @@ class Post extends Component {
         if(this.state.isNew){
             this.props.createPost(this.props.index, this.state);
         }
-        else
+        else{
             this.props.savePost(this.props.index, this.state);
+        }
+            
     }
 
-    deletePost = () => {
+    deletePost = event => {
         event.preventDefault();
         if(this.state.isNew){
             this.props.removePost(this.props.index);
         }
-        else
+        else{
             this.props.deletePost(this.props.index);
+        }
+            
     }
 
     componentDidMount = () => {

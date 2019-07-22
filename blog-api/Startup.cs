@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using blog_api.Models;
 using blog_api.Services;
@@ -35,7 +29,7 @@ namespace blog_api
 
             services.AddSingleton<PostService>();
 
-            services.AddCors();
+            services.AddCors(); //Enable Cors
 
             services.AddMvc().AddJsonOptions(options => options.UseMemberCasing())
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -52,6 +46,8 @@ namespace blog_api
             {
                 app.UseHsts();
             }
+            //Configure Cors to allow any origin, method and header.
+            //Production environments would require safer restrictions
             app.UseCors(builder => builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader());
 
             app.UseHttpsRedirection();
